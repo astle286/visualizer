@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: visualizer-build
-          path: .next
+          path: visualizer/.next
   deploy:
     runs-on: [self-hosted, deploy]
     needs: build
