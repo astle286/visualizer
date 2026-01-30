@@ -26,8 +26,12 @@ jobs:
       - name: Run build
         run: npm run build
 
+      - name: List build output
+        run: ls -la .next/
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
         with:
           name: visualizer-build
           path: .next/
+
