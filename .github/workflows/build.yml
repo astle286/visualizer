@@ -49,5 +49,14 @@ jobs:
         npx next start -p 3000
       working-directory: ./build
 
+    - name: set up ngrok tunnel
+      run: |
+        npm install -g ngrok
+        ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+        ngrok http 3000 > ngrok.log &
+        sleep 5
+        curl http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
+       
+
   
 
