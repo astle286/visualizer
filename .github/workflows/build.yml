@@ -25,7 +25,8 @@ jobs:
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: | nextjs-${{ runner.os }}
+          restore-keys: |
+            nextjs-${{ runner.os }}
 
       - name: Install dependencies
         run: npm install
