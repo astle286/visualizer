@@ -1,0 +1,7 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* orange-pink gradient */
+  color: white;
+}
