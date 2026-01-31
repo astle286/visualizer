@@ -53,14 +53,14 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: npm install
-      working-directory: visualizer/visualizer
+      working-directory: visualizer
 
     - name: Build Next.js app
       run: npm run build
       working-directory: visualizer/visualizer
     - name: Start Next.js server
       run: nohup npx next start -p 3000 > server.log &
-      working-directory: visualizer/visualizer
+      working-directory: visualizer
     - name: set up ngrok tunnel
       run: |
         npm install -g ngrok
