@@ -55,6 +55,9 @@ jobs:
         ngrok http 3000 > ngrok.log &
         sleep 5
         curl http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
+
+    - name: Keep job alive for 1 hour
+      run: sleep 3600
        
 
   
