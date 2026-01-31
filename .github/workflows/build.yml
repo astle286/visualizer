@@ -20,28 +20,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Cache Next.js build output 
-        uses: actions/cache@v4 
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            nextjs-${{ runner.os }}
-
       - name: Install dependencies
         run: npm install
 
       - name: Run build
         run: npm run build
-
-      - name: List build output
-        run: ls -la .next/
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: visualizer-build
-          path: _work/visualizer/visualizer/.next
   deploy:
     needs: build
     runs-on: [self-hosted, deploy]
