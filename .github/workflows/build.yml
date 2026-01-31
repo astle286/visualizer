@@ -46,7 +46,7 @@ jobs:
       run: nohup npx next start -p 3000 > server.log &
 
     - name: Install jq
-      run: apt-get update && apt-get install -y jq
+      run: sudo apt-get update && sudo apt-get install -y jq
       
     - name: set up ngrok tunnel
       run: |
