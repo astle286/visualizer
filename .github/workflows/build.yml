@@ -43,6 +43,7 @@ jobs:
           name: visualizer-build
           path: _work/visualizer/visualizer/.next
   deploy:
+    needs: build
     runs-on: [self-hosted, deploy]
     
     steps:
