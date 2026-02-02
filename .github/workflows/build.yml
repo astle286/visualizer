@@ -69,9 +69,9 @@ jobs:
         run: tar -xzf next-build.tar.gz
 
       - name: Clean workspace
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
       - name: Install production dependencies
-        run: npm ci --only=production
+        run: npm ci --omit=dev
       - name: Start Next.js server
         run: |
           nohup npm start -- -p 3000 &
