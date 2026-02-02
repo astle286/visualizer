@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: .next/
+          path: .next
   deploy:
     needs: build
     runs-on: [self-hosted, deploy]
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: next-build
-          path: .next/
+          path: .next
       - name: Copy build into Docker container
         run: |
           docker cp .next visualizer-deployer:/usr/src/app/.next
