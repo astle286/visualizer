@@ -48,11 +48,14 @@ jobs:
       - name: quick check build output
         run: ls -la .next || echo "No .next folder found"
 
+      - name: zip it
+        run: tar -czf next-build.tar.gz .next
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: .next
+          path: next-build.tar.gz
   deploy:
     needs: build
     runs-on: [self-hosted, deploy]
@@ -61,11 +64,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: next-build
-          path: .next
+          path: .
+
+      - name: Extract build
+        run: tar -xzf next-build.tar.gz
       - name: Copy build into Docker container
         run: |
           docker cp .next visualizer-deployer:/usr/src/app/.next
           docker cp package.json visualizer-deployer:/usr/src/app/package.json
+          docker cp package-lock.json visualizer-deployer:/usr/src/app/package-lock.json
       
       - name: Install container dependencies
         run: |
