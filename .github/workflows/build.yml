@@ -9,7 +9,25 @@ permissions:
   packages: write
 
 jobs:
+  test:
+    runs-on: [self-hosted, test]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
   build:
+    needs: test
     runs-on: [self-hosted, build]
 
     steps:
@@ -25,40 +43,50 @@ jobs:
 
       - name: Run build
         run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: next-build
+          path: .next/
   deploy:
     needs: build
     runs-on: [self-hosted, deploy]
     
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - name: Install dependencies
-      run: npm install
+      - uses: actions/download-artifact@v3
+        with:
+          name: next-build
+          path: .next/
+      - name: Copy build into Docker container
+        run: |
+          docker cp .next visualizer-deployer:/usr/src/app/.next
+          docker cp package.json visualizer-deployer:/usr/src/app/package.json
       
+      - name: Install container dependencies
+        run: |
+          docker exec visualizer-deployer npm install --production --prefix /usr/src/app
+      - name: Restart Docker container
+        run: |
+          docker restart visualizer-deployer
 
-    - name: Build Next.js app
-      run: npm run build
-      
-    - name: Start Next.js server
-      run: nohup npx next start -p 3000 > server.log &
+      - name: Start Next.js server
+        run: docker exec -d visualizer-deployer npx next start -p 3000 
 
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
-      
-    - name: set up ngrok tunnel
-      run: |
-        npm install -g ngrok
-        ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-        ngrok http 3000 > ngrok.log &
-        sleep 5
-        curl http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+        
+      - name: set up ngrok tunnel
+        run: |
+          npm install -g ngrok
+          ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+          ngrok http 3000 > ngrok.log &
+          sleep 5
+          curl http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
 
-    - name: Keep job alive for 1 hour
-      run: sleep 3600
-       
+      - name: Keep job alive for 3 minutes
+        run: sleep 180
+        
 
-  
+    
 
