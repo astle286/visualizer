@@ -65,13 +65,13 @@ jobs:
         with:
           name: next-build
           path: .
-
       - name: Extract build
         run: tar -xzf next-build.tar.gz
 
+      - name: Clean workspace
+        run: rm -rf node_modules package-lock.json
       - name: Install production dependencies
         run: npm ci --only=production
-
       - name: Start Next.js server
         run: |
           nohup npm start -- -p 3000 &
