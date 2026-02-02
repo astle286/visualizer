@@ -37,12 +37,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run build
         run: npm run build
+
+      - name: quick check build output
+        run: ls -la .next || echo "No .next folder found"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
